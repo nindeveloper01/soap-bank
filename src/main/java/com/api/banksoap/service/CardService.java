@@ -14,14 +14,16 @@ public class CardService {
     }
 
     public void saveCard(CreateCardRequest request) {
-        // Basic validation to prevent nulls in DB
-        if (request.getCardNumber() == null || request.getCardNumber().isEmpty()) throw new RuntimeException("Card number is required");
+        // Prevent duplicate card numbers
+        if (repository.findByCardNumber(request.getCardNumber()).isPresent()) {
+            throw new RuntimeException("Card already exists!");
+        }
 
         Card card = new Card();
         card.setCardNumber(request.getCardNumber());
         card.setCardType(request.getCardType());
         card.setExpiryDate(request.getExpiryDate());
-        card.setStatus("ACTIVE");
+        card.setStatus("ACTIVE"); // Default status
 
         repository.save(card);
     }

@@ -10,28 +10,17 @@ import org.springframework.stereotype.Service;
 public class BankService {
 
     private final AccountRepository repository;
-
     public BankService(AccountRepository repository) {
         this.repository = repository;
     }
 
-    public Account createAccount(CreateAccountRequest request) {
-        // Check for null/empty input
-        if (request.getAccountNumber()== null || request.getAccountNumber().trim().isEmpty()) {
-            throw new IllegalArgumentException("Account number cannot be empty");
-        }
-
-        // Check if account already exists to avoid duplicates
-        if (repository.findByAccountNumber(request.getAccountNumber()).isPresent()) {
-            throw new RuntimeException("Account already exists with number: " + request.getAccountNumber());
-        }
-
+    public void createAccount(CreateAccountRequest request) {
         Account account = new Account();
         account.setAccountNumber(request.getAccountNumber());
         account.setBalance(request.getBalance());
         account.setCurrency(request.getCurrency());
 
-        return repository.save(account);
+        repository.save(account);
     }
 
     public Account getAccount(GetAccountRequest request) {
